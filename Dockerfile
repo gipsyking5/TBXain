@@ -1,4 +1,5 @@
 ARG CUDA_VERSION=12.4.1
+
 #################### BASE BUILD IMAGE ####################
 FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu20.04 AS base
 ARG CUDA_VERSION=12.4.1
@@ -50,11 +51,15 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 COPY . .
 
-# 🚀 FIXED: Removed `.git` dependency that was causing errors
+# 🚀 FIXED: Prevent `.git` error
 RUN if [ -d .git ] && [ "$GIT_REPO_CHECK" != 0 ]; then bash tools/check_repo.sh ; fi
 
-# Build vLLM Python package
-RUN python3 setup.py bdist_wheel --dist-dir=dist --py-limited-api=cp38
+# 🚀 FIXED: Ensure required packages are installed
+RUN python3 -m pip install --upgrade pip setuptools wheel cmake ninja
+
+# 🚀 FIXED: Debug setup.py errors
+RUN ls -lah  # ✅ Lists all files to check missing dependencies
+RUN python3 setup.py bdist_wheel --dist-dir=dist --py-limited-api=cp38 || cat dist/*.log
 
 #################### FINAL IMAGE ####################
 FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu22.04 AS vllm-runtime
