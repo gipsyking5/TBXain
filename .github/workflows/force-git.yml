@@ -1,0 +1,19 @@
+name: Force Git Tracking
+
+on: [push]
+
+jobs:
+  force-git:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Ensures full Git history
+
+      - name: Ensure .git is recognized
+        run: |
+          git init
+          git add .
+          git commit -m "Force Git tracking"
+          git push --force
