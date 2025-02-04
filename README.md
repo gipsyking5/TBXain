@@ -4,7 +4,7 @@
     <img alt="vLLM" src="https://raw.githubusercontent.com/vllm-project/vllm/main/docs/source/assets/logos/vllm-logo-text-light.png" width=55%>
   </picture>
 </p>
-
+  
 <h3 align="center">
 Easy, fast, and cheap LLM serving for everyone
 </h3>
